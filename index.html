@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Test Kavenegar APIs and copy SDK examples for six languages.">
+  <meta id="theme-color" name="theme-color" content="#f5f7fa">
+  <title>Kavenegar API Lab</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('kavenegar-theme');
+        document.documentElement.dataset.theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch { document.documentElement.dataset.theme = 'light'; }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Kavenegar API Lab home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>Kavenegar <b>API Lab</b></span>
+      </a>
+      <label class="topbar-search" for="global-endpoint-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+        <input id="global-endpoint-search" type="search" placeholder="Search 51 endpoints" autocomplete="off">
+        <kbd>/</kbd>
+      </label>
+      <div class="topbar-key">
+        <label for="api-key">API key</label>
+        <div class="input-with-action">
+          <input id="api-key" type="password" placeholder="Enter your Kavenegar API key" autocomplete="off" spellcheck="false">
+          <button id="toggle-key" class="text-button" type="button" aria-label="Show API key">Show</button>
+        </div>
+        <span id="key-status" class="key-safe" title="Kept in memory only" aria-label="API key is kept in memory only">Secure</span>
+      </div>
+      <div class="topbar-actions">
+        <a class="docs-link" href="https://kavenegar.com/rest.html" target="_blank" rel="noreferrer">API docs <span aria-hidden="true">↗</span></a>
+        <span class="status-pill"><i></i> Production</span>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch color theme">
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.2A8.5 8.5 0 0 1 8.8 3.8 8.5 8.5 0 1 0 20.2 15.2Z"/></svg>
+        <span class="theme-label">Dark</span>
+      </button>
+    </header>
+
+    <aside class="sidebar" aria-label="API endpoints">
+      <div class="sidebar-heading">
+        <button class="icon-button mobile-close" type="button" aria-label="Close menu">×</button>
+      </div>
+      <nav id="endpoint-nav"></nav>
+      <div class="sidebar-footer">
+        <span class="shield-icon">◇</span>
+        <p><strong>Your key stays private</strong><br>It is kept in memory only and never stored.</p>
+      </div>
+    </aside>
+    <button class="sidebar-scrim" type="button" aria-label="Close API menu" tabindex="-1"></button>
+
+    <main class="workspace">
+      <div class="mobile-titlebar">
+        <button class="icon-button menu-button" type="button" aria-label="Open API menu">☰</button>
+        <span>API playground</span>
+      </div>
+
+      <section class="hero" aria-labelledby="playground-title">
+        <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <span class="eyebrow"><i aria-hidden="true"></i> Interactive playground</span>
+          <h1 id="playground-title">Build your first <span>live request.</span></h1>
+          <p>Test the REST API, inspect the response, then move the exact same request into your preferred SDK.</p>
+          <div class="hero-meta" aria-label="Playground capabilities">
+            <span><strong>50</strong> SDK endpoints</span><span><strong>8</strong> topics</span><span><strong>6</strong> SDKs</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="live-pill"><i></i><span id="hero-live-label">SMS endpoint</span></div>
+          <div class="message-bubble message-bubble-one">
+            <span class="message-avatar">SMS</span>
+            <span class="message-copy"><b>Message sent</b><i><em></em><em></em><em></em></i></span>
+          </div>
+          <div class="message-bubble message-bubble-two">
+            <span class="delivery-check">&#10003;</span>
+            <span class="message-copy"><b>Delivered</b><small>just now</small></span>
+          </div>
+          <div class="orbit orbit-outer"><b></b><b></b></div>
+          <div class="orbit orbit-inner"><b></b></div>
+          <div class="api-core"><span id="hero-method">POST</span><strong id="hero-route">/send</strong></div>
+          <div class="message-wave message-wave-one"></div>
+          <div class="message-wave message-wave-two"></div>
+          <div class="signal signal-one"></div>
+          <div class="signal signal-two"></div>
+        </div>
+      </section>
+
+      <section class="request-layout">
+        <div class="request-column">
+          <article class="panel request-panel">
+            <div class="panel-title">
+              <div><span class="step">01</span><h2 id="request-title">Send an SMS</h2></div>
+              <div class="endpoint-state"><span class="message-pulse" title="Live endpoint" aria-label="Live endpoint"><i></i><i></i><i></i></span><span id="method-badge" class="method-badge">POST</span></div>
+            </div>
+            <div class="endpoint-row">
+              <div class="endpoint-strip">
+                <span>https://api.kavenegar.com/v1/</span><b>••••••••</b><span id="endpoint-path">/sms/send.json</span>
+              </div>
+              <button id="copy-curl" class="secondary-button compact" type="button">Copy cURL</button>
+            </div>
+            <form id="request-form">
+              <div class="parameters-heading">
+                <span id="parameters-count">Parameters</span>
+                <span>Required fields are marked</span>
+              </div>
+              <div id="dynamic-fields" class="fields-grid"></div>
+              <div class="run-row">
+                <p><span class="lock-dot">●</span> Request goes directly to Kavenegar</p>
+                <div class="run-actions">
+                  <button id="reset-request" class="secondary-button" type="button">Reset</button>
+                  <button id="run-request" class="primary-button" type="submit">
+                    <span class="button-label">Run request</span><span class="arrow">→</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </article>
+        </div>
+
+        <article class="panel response-panel">
+          <div class="response-heading">
+            <div><span class="step">02</span><h2>Response</h2></div>
+            <div class="response-actions">
+              <button id="clear-response" class="icon-text-button" type="button" disabled>Clear</button>
+              <button id="copy-response" class="icon-text-button" type="button" disabled>Copy</button>
+            </div>
+          </div>
+          <div id="response-meta" class="response-meta" hidden>
+            <span id="response-status"></span><span id="response-time"></span>
+          </div>
+          <div id="response-loading" class="response-loading" hidden>
+            <div class="request-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+            <h3>Sending secure request</h3>
+            <p id="loading-endpoint">Connecting to the Kavenegar API…</p>
+            <div class="loading-steps" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+          <div id="response-empty" class="response-empty">
+            <div class="empty-glyph"><span>{ }</span></div>
+            <h3>Your response will appear here</h3>
+            <p>Complete the fields and run the request to see the live API response.</p>
+          </div>
+          <pre id="response-output" class="response-output" hidden><code></code></pre>
+        </article>
+      </section>
+
+      <section class="examples-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">SDK examples</span><h2>Use the corresponding SDK function</h2></div>
+          <p>Generated with each package’s public SDK client, request models, and corresponding endpoint functions.</p>
+        </div>
+        <article class="code-card">
+          <div class="language-tabs" id="language-tabs" role="tablist" aria-label="SDK language"></div>
+          <div class="code-toolbar">
+            <span id="code-filename">Program.cs</span>
+            <button id="copy-code" class="icon-text-button" type="button">Copy code</button>
+          </div>
+          <pre class="code-block"><code id="code-output"></code></pre>
+          <div class="install-row"><span>Install</span><code id="install-command"></code><button id="copy-install" type="button">Copy</button></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="sdk-examples.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
